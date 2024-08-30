@@ -1,1 +1,4 @@
-GET http://localhost:3000/api/unknown
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+
+GET {{base_url}}:{{port}}/api/unknown
