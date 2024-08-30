@@ -10,7 +10,7 @@ This is a mono repo containing code and scripts for both Backend and Frontend.
 
 <b>Following are the pre-requisites to run the project locally </b>
 
-- Postgres with database created for task-manager
+- Postgres with database created for task-manager. (Required Schema and tables with seed data will be done by npm script)
 - NodeJs `v20.10.0` or higher
 - Npm `v10.2.3` or higher
 - Duplicate `.env.sample` and rename it to `.env`
@@ -25,10 +25,16 @@ npm install:all
 
 This will install all the dependencies required to run Backend as well as Frontend
 
+Create database schema, tables and seed the data:
+
+```bash
+npm run db:setup
+```
+
 To run:
 
 ```bash
-npm start
+npm dev
 ```
 
 This will start a tsc compiler and dev server.
