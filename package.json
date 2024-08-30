@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "description": "Task Manager app",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && npm run install:backend",
+    "lint": "cd server && npm run lint",
+    "dev": "cd server && npm dev",
+    "build": "cd server && npm run build",
+    "start": "cd server && npm start",
+    "test": "cd server && npm test -- --coverage\n",
+    "test:ci": "cd server && npm run test:ci\n",
+    "cleanup:install:all": "npm cache clean --force && sh cleanup.sh && npm run install:all"
+  },
+  "keywords": [],
+  "author": "Piyush Ramavat",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "lint-staged": "^15.2.9",
+    "prettier": "^3.3.3"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,css,scss,html,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
