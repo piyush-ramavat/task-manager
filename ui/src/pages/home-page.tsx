@@ -1,15 +1,14 @@
 import { useCookies } from "react-cookie";
-import UserAppBar from "../components/user-app-bar";
 import UserTaskList from "../components/task-list";
+import PageContainer from "../components/page-container";
 
 function Home() {
   const [cookies] = useCookies();
 
   return (
-    <>
-      <UserAppBar />
+    <PageContainer>
       <UserTaskList userId={cookies.userId} />
-    </>
+    </PageContainer>
   );
 }
 
