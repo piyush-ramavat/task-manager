@@ -1,3 +1,4 @@
+import { Task } from "@prisma/client";
 import { z } from "zod";
 
 const DateSchema = z.string().transform((val) => new Date(val));
@@ -20,3 +21,11 @@ export const UpdateTaskRequestSchema = z.object({
 });
 
 export type UpdateTaskRequest = z.infer<typeof UpdateTaskRequestSchema>;
+
+export enum TaskStatus {
+  NotUrgent = "Not Urgent",
+  DueSoon = "Due Soon",
+  Overdue = "Overdue",
+}
+
+export type UserTask = Task & { status: TaskStatus };
