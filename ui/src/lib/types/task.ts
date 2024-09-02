@@ -20,3 +20,11 @@ export const UserTaskSchema = z.object({
 });
 
 export type UserTask = z.infer<typeof UserTaskSchema>;
+
+export type CreateUserTask = {
+  name: string;
+  description: string;
+  dueDate: Date;
+};
+
+export type UpdateUserTask = CreateUserTask & { id: number };

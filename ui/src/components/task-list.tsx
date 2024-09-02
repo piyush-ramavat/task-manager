@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { useGetUserTasks } from "../services";
 import { UserTask } from "../lib/types/task";
 import { toFormattedDateString, toFormattedDateTimeString } from "../lib/utils";
+import { Fab, Stack } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import UpsertTaskDialog from "./upsert-task-dialog";
+import { Fragment, useEffect, useState } from "react";
 
 type Props = {
   userId: number;
@@ -17,10 +21,21 @@ type Props = {
 
 export default function UserTaskList({ userId }: Props) {
   const navigate = useNavigate();
-  const { data: tasks, isLoading, error } = useGetUserTasks(userId);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const {
+    data: tasks,
+    refetch,
+    isLoading,
+    isRefetching,
+  } = useGetUserTasks(userId);
+
+  useEffect(() => {
+    refetch();
+  }, [openEditDialog, refetch]);
 
   if (!userId || isLoading || !tasks || tasks.length <= 0) {
-    return <>No Data Yet</>;
+    return null;
   }
   const columns: GridColDef[] = [
     {
@@ -70,8 +85,30 @@ export default function UserTaskList({ userId }: Props) {
     },
   ];
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 5, height: 400, width: "100%" }}>
+    <Container maxWidth="xl">
+      <Stack spacing={2} sx={{ my: 2 }} direction="row">
+        <Fragment>
+          <Fab
+            variant="extended"
+            size="medium"
+            color="primary"
+            onClick={() => setOpenEditDialog(true)}
+          >
+            <AddIcon />
+            Add Task
+          </Fab>
+
+          <UpsertTaskDialog
+            isCreateMode={true}
+            openDialog={openEditDialog}
+            onToggleDialog={() => {
+              setOpenEditDialog(!openEditDialog);
+            }}
+          />
+        </Fragment>
+      </Stack>
+
+      <Box sx={{ mt: 5, width: "100%" }}>
         <CssBaseline />
         <DataGrid
           autoHeight
@@ -80,15 +117,14 @@ export default function UserTaskList({ userId }: Props) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 15,
               },
             },
           }}
-          pageSizeOptions={[5]}
-          loading={isLoading}
+          loading={isLoading || isRefetching}
           getRowId={(row) => row.id}
           onRowClick={(task: GridRowParams<UserTask>) => {
-            console.log("Row Clicked", task);
+            navigate(`/task-view/${task.id}`);
           }}
         />
       </Box>

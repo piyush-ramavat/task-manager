@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { CookiesProvider } from "react-cookie";
+import "react-datepicker/dist/react-datepicker.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

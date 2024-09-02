@@ -34,5 +34,9 @@ export const findUser = async (userId: number) => {
 export const findAllUsers = async () => {
   const db = dbService();
 
-  return await db.user.findMany({});
+  return await db.user.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
 };
