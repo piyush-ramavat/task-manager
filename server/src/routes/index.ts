@@ -11,7 +11,7 @@ apiRouter.get("/health-check", healthCheckHandler);
 
 // API routes
 apiRouter.post("/api/tasks", withErrorHandler(createTaskHandler));
-apiRouter.get("/api/tasks", withErrorHandler(getTaskHandler));
+apiRouter.get("/api/tasks/:taskId", withErrorHandler(getTaskHandler));
 
 // Unknown
 apiRouter.use((req, res) => {

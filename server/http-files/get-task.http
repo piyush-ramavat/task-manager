@@ -1,4 +1,4 @@
 @base_url = {{$dotenv URL}}
 @port = {{$dotenv PORT}}
 
-GET {{base_url}}:{{port}}/api/tasks
+GET {{base_url}}:{{port}}/api/tasks/1

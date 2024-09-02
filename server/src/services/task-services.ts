@@ -10,3 +10,13 @@ export const createTask = async (taskDetails: CreateTaskRequest) => {
     },
   });
 };
+
+export const findTask = async (taskId: number) => {
+  const db = dbService();
+
+  return await db.task.findFirst({
+    where: {
+      id: taskId,
+    },
+  });
+};
