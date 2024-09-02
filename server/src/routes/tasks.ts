@@ -21,8 +21,8 @@ export const createTaskHandler: Handler = async (req, res) => {
   return RestHelper.json(res, created);
 };
 
-// GET /api/:userId/tasks/all
-export const getAllTasksHandler: Handler = async (req, res) => {
+// GET /api/:userId/tasks/list
+export const getTaskListHandler: Handler = async (req, res) => {
   const userId = Number(req.params.userId);
 
   // NOTE: Ideally this would be done via Auth but for current scope, userId is expected in request.body
@@ -40,6 +40,10 @@ export const getTaskHandler: Handler = async (req, res) => {
   const userId = Number(req.params.userId);
   const taskId = Number(req.params.taskId);
 
+  // userId is already checked in user-exists-auth
+  if (isNaN(taskId)) {
+    throw new ApiError(APIErrorStatus.BadRequest, "Bad request");
+  }
   const task = await findTask(taskId, userId);
 
   if (!task) {
