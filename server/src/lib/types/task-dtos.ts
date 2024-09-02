@@ -16,6 +16,7 @@ export const UpdateTaskRequestSchema = z.object({
   name: z.string(),
   description: z.string(),
   dueDate: DateSchema,
+  updatedAt: z.date(),
 });
 
 export type UpdateTaskRequest = z.infer<typeof UpdateTaskRequestSchema>;
