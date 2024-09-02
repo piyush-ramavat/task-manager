@@ -1,6 +1,16 @@
 import { dbService } from "../lib/db-service";
 import { CreateUserRequest } from "../lib/types";
 
+export const findUserByEmail = async (email: string) => {
+  const db = dbService();
+
+  return await db.user.findFirst({
+    where: {
+      email,
+    },
+  });
+};
+
 export const createUser = async (userDetails: CreateUserRequest) => {
   const db = dbService();
 

@@ -1,0 +1,9 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+
+POST {{base_url}}:{{port}}/user/auth-by-email
+Content-Type: application/json
+
+{
+    "email": "new@local.test"
+}
