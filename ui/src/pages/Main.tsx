@@ -13,16 +13,20 @@ import Grid from "@mui/material/Grid2";
 
 import { useNavigate } from "react-router-dom";
 import { useEmailOnlyAuth } from "../services";
+import { useCookies } from "react-cookie";
 
 function Main() {
   const [email, setEmail] = useState<string>("default-user@local.com");
   const navigate = useNavigate();
   const mutation = useEmailOnlyAuth();
+  const [cookies, setCookie] = useCookies(["user"]);
 
   const handleGo = async () => {
     try {
       const user = await mutation.mutateAsync({ email });
       if (user) {
+        setCookie("user", user);
+        console.log(`User name: ${cookies.user?.name}`);
         navigate("/home");
       } else {
         console.log("Not Found");
