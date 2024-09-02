@@ -6,17 +6,9 @@ import { ApiError } from "../lib/utils/api-error";
 
 // POST /api/task
 export const createTaskHandler: Handler = async (req, res) => {
-  let createTaskDetails;
-  try {
-    createTaskDetails = JSON.parse(req.body);
-  } catch (e) {
-    throw new ApiError(APIErrorStatus.BadRequest, "Bad Request");
-  }
-
-  const parsed = CreateTaskRequestSchema.safeParse(createTaskDetails);
+  const parsed = CreateTaskRequestSchema.safeParse(req.body);
   if (!parsed.success) {
-    console.error("Zod Parse error", parsed.error);
-    throw new ApiError(APIErrorStatus.BadRequest, "Bad Request");
+    throw new ApiError(APIErrorStatus.BadRequest, "Bad Request", parsed.error);
   }
   const created = await createTask(parsed.data);
   return RestHelper.json(res, created);

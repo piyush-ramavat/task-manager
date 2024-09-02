@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+const DateSchema = z.string().transform((val) => new Date(val));
+
 export const CreateTaskRequestSchema = z.object({
   name: z.string(),
   description: z.string(),
-  dueDate: z.date(),
+  dueDate: DateSchema,
   userId: z.number(),
 });
 
