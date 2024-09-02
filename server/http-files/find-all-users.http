@@ -1,0 +1,4 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+
+GET {{base_url}}:{{port}}/admin/users

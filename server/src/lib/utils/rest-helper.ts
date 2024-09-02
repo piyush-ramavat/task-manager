@@ -7,6 +7,7 @@ export enum APIErrorStatus {
   Accepted = 202,
   NotFound = 404,
   BadRequest = 400,
+  UnAuthorized = 401,
 }
 
 export const RestHelper = {
