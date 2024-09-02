@@ -52,54 +52,60 @@ export default function UserTaskDetails({ userId }: Props) {
   if (!task) return null;
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Typography variant="h4" sx={{ m: 2 }}>
-        Task Details
-      </Typography>
-      {(isLoading || isRefetching) && <CircularProgress />}
-      <Container maxWidth="lg">
-        <Stack spacing={1}>
-          <DetailDataRow label="Id" value={task.id.toString()} />
-          <DetailDataRow label="Name" value={task.name} />
-          <DetailDataRow label="Description" value={task.description} />
-          <DetailDataRow
-            label="Due Date"
-            value={toFormattedDateString(task.dueDate)}
-          />
-          <DetailDataRow label="Status" value={task.status} />
-          <DetailDataRow
-            label="Created At"
-            value={toFormattedDateTimeString(task.createdAt)}
-          />
-          <DetailDataRow
-            label="Updated At"
-            value={
-              task.updatedAt ? toFormattedDateTimeString(task.updatedAt) : ""
-            }
-          />
-        </Stack>
-        <Stack spacing={2} sx={{ my: 2 }} direction="row">
-          <Fragment>
-            <Button variant="contained" onClick={() => setOpenEditDialog(true)}>
-              Edit
-            </Button>
-            <UpsertTaskDialog
-              task={task}
-              isOpen={openEditDialog}
-              onToggleDialog={() => {
-                setOpenEditDialog(!openEditDialog);
-              }}
+    <Container maxWidth="xl">
+      <Box sx={{ mt: 5, width: "100%" }}>
+        <Typography variant="h4" sx={{ m: 2 }}>
+          Task Details
+        </Typography>
+        {(isLoading || isRefetching) && <CircularProgress />}
+        <Container maxWidth="lg">
+          <Stack spacing={1}>
+            <DetailDataRow label="Id" value={task.id.toString()} />
+            <DetailDataRow label="Name" value={task.name} />
+            <DetailDataRow label="Description" value={task.description} />
+            <DetailDataRow
+              label="Due Date"
+              value={toFormattedDateString(task.dueDate)}
             />
-          </Fragment>
-          <Button
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            onClick={() => navigate(-1)}
-          >
-            Back
-          </Button>
-        </Stack>
-      </Container>
-    </Box>
+            <DetailDataRow label="Status" value={task.status} />
+            <DetailDataRow
+              label="Created At"
+              value={toFormattedDateTimeString(task.createdAt)}
+            />
+            <DetailDataRow
+              label="Updated At"
+              value={
+                task.updatedAt ? toFormattedDateTimeString(task.updatedAt) : ""
+              }
+            />
+          </Stack>
+          <Stack spacing={2} sx={{ my: 2 }} direction="row">
+            <Fragment>
+              <Button
+                variant="contained"
+                onClick={() => setOpenEditDialog(true)}
+              >
+                Edit
+              </Button>
+              <UpsertTaskDialog
+                isCreateMode={false}
+                task={task}
+                openDialog={openEditDialog}
+                onToggleDialog={() => {
+                  setOpenEditDialog(!openEditDialog);
+                }}
+              />
+            </Fragment>
+            <Button
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              onClick={() => navigate(-1)}
+            >
+              Back
+            </Button>
+          </Stack>
+        </Container>
+      </Box>
+    </Container>
   );
 }

@@ -5,31 +5,58 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { useUpdateTask } from "../services";
-import { UserTask } from "../lib/types/task";
+import { useCreateTask, useUpdateTask } from "../services";
+import { CreateUserTask, UpdateUserTask, UserTask } from "../lib/types/task";
 import DatePicker from "react-datepicker";
 import { CircularProgress, Typography } from "@mui/material";
+import { useCookies } from "react-cookie";
 type Props = {
-  task: UserTask;
-  isOpen: boolean;
+  isCreateMode: boolean;
+  openDialog: boolean;
   onToggleDialog: () => void;
+  task?: UserTask;
 };
 export default function UpsertTaskDialog({
+  isCreateMode,
   task,
-  isOpen,
+  openDialog,
   onToggleDialog,
 }: Props) {
-  const mutation = useUpdateTask(task.userId);
+  const [cookies] = useCookies();
 
-  const [dueDate, setDueDate] = useState(task.dueDate);
+  const updateMutation = useUpdateTask(cookies.userId);
+  const createMutation = useCreateTask(cookies.userId);
+
+  const [dueDate, setDueDate] = useState(task?.dueDate);
 
   const handleClose = () => {
     onToggleDialog();
   };
 
+  async function createTask(formJson: { [k: string]: any }) {
+    const requestData: CreateUserTask = {
+      name: formJson.name,
+      description: formJson.description,
+      dueDate: dueDate!,
+    };
+
+    await createMutation.mutateAsync(requestData);
+  }
+
+  async function updateTask(formJson: { [k: string]: any }) {
+    const requestData: UpdateUserTask = {
+      id: task!.id,
+      name: formJson.name,
+      description: formJson.description,
+      dueDate: dueDate!,
+    };
+
+    await updateMutation.mutateAsync(requestData);
+  }
+
   return (
     <Dialog
-      open={isOpen}
+      open={openDialog}
       onClose={handleClose}
       PaperProps={{
         component: "form",
@@ -37,21 +64,18 @@ export default function UpsertTaskDialog({
           event.preventDefault();
           const formData = new FormData(event.currentTarget);
           const formJson = Object.fromEntries((formData as any).entries());
-          const requestData: UserTask = {
-            ...task,
-            ...{
-              name: formJson.name,
-              description: formJson.description,
-              dueDate,
-            },
-          };
-
-          await mutation.mutateAsync(requestData);
+          if (isCreateMode) {
+            await createTask(formJson);
+          } else {
+            await updateTask(formJson);
+          }
           handleClose();
         },
       }}
     >
-      <DialogTitle>Edit Task - id: {task.id}</DialogTitle>
+      <DialogTitle>
+        {isCreateMode ? `Create Task` : `Edit Task - id: ${task!.id}`}
+      </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -60,7 +84,7 @@ export default function UpsertTaskDialog({
           id="name"
           name="name"
           label="Task Name"
-          value={task.name}
+          value={task?.name}
           fullWidth
           variant="standard"
         />
@@ -70,7 +94,7 @@ export default function UpsertTaskDialog({
           margin="dense"
           id="description"
           name="description"
-          value={task.description}
+          value={task?.description}
           label="Task Description"
           fullWidth
           variant="standard"
@@ -93,7 +117,7 @@ export default function UpsertTaskDialog({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button type="submit">save</Button>
-        {mutation.isLoading && <CircularProgress />}
+        {updateMutation.isLoading && <CircularProgress />}
       </DialogActions>
     </Dialog>
   );

@@ -4,7 +4,7 @@ import {
   QueryResponse,
   useApiDataClient,
 } from "../lib/utils";
-import { UserTask } from "../lib/types/task";
+import { CreateUserTask, UpdateUserTask, UserTask } from "../lib/types/task";
 
 export const useGetUserTasks = (userId: number): QueryResponse<UserTask[]> => {
   const apiClient = useApiDataClient();
@@ -36,20 +36,32 @@ export const useGetUserTask = (
     {
       enabled: !!userId && !!taskId,
       keepPreviousData: false,
-      cacheTime:0,
-      refetchOnMount: true
+      cacheTime: 0,
+      refetchOnMount: true,
     }
+  );
+};
+
+export const useCreateTask = (
+  userId: number
+): MutationResponse<CreateUserTask, UserTask> => {
+  const apiClient = useApiDataClient();
+  // /api/:userId/tasks
+  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks`;
+
+  return useMutation((requestData: CreateUserTask) =>
+    apiClient.post<UserTask>(url, requestData)
   );
 };
 
 export const useUpdateTask = (
   userId: number
-): MutationResponse<UserTask, UserTask> => {
+): MutationResponse<UpdateUserTask, UserTask> => {
   const apiClient = useApiDataClient();
   // /api/:userId/tasks
   const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks`;
 
-  return useMutation((requestData: UserTask) =>
+  return useMutation((requestData: UpdateUserTask) =>
     apiClient.put<UserTask>(url, requestData)
   );
 };
