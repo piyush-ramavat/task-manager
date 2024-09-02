@@ -34,9 +34,6 @@ export default function UserTaskList({ userId }: Props) {
     refetch();
   }, [openEditDialog, refetch]);
 
-  if (!userId || isLoading || !tasks || tasks.length <= 0) {
-    return null;
-  }
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -117,10 +114,11 @@ export default function UserTaskList({ userId }: Props) {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 15,
+                pageSize: 20,
               },
             },
           }}
+          pageSizeOptions={[10, 20, 30]}
           loading={isLoading || isRefetching}
           getRowId={(row) => row.id}
           onRowClick={(task: GridRowParams<UserTask>) => {

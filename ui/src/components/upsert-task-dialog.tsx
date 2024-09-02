@@ -27,9 +27,9 @@ export default function UpsertTaskDialog({
   const updateMutation = useUpdateTask(cookies.userId);
   const createMutation = useCreateTask(cookies.userId);
 
-  const [name, setName] = useState(task?.name);
-  const [description, setDescription] = useState(task?.description);
-  const [dueDate, setDueDate] = useState(task?.dueDate);
+  const [name, setName] = useState(task?.name || "");
+  const [description, setDescription] = useState(task?.description || "");
+  const [dueDate, setDueDate] = useState(task?.dueDate || new Date());
 
   const handleClose = () => {
     onToggleDialog();
