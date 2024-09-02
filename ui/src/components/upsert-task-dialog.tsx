@@ -27,27 +27,29 @@ export default function UpsertTaskDialog({
   const updateMutation = useUpdateTask(cookies.userId);
   const createMutation = useCreateTask(cookies.userId);
 
+  const [name, setName] = useState(task?.name);
+  const [description, setDescription] = useState(task?.description);
   const [dueDate, setDueDate] = useState(task?.dueDate);
 
   const handleClose = () => {
     onToggleDialog();
   };
 
-  async function createTask(formJson: { [k: string]: any }) {
+  async function createTask() {
     const requestData: CreateUserTask = {
-      name: formJson.name,
-      description: formJson.description,
+      name: name!,
+      description: description!,
       dueDate: dueDate!,
     };
 
     await createMutation.mutateAsync(requestData);
   }
 
-  async function updateTask(formJson: { [k: string]: any }) {
+  async function updateTask() {
     const requestData: UpdateUserTask = {
       id: task!.id,
-      name: formJson.name,
-      description: formJson.description,
+      name: name!,
+      description: description!,
       dueDate: dueDate!,
     };
 
@@ -62,12 +64,10 @@ export default function UpsertTaskDialog({
         component: "form",
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries((formData as any).entries());
           if (isCreateMode) {
-            await createTask(formJson);
+            await createTask();
           } else {
-            await updateTask(formJson);
+            await updateTask();
           }
           handleClose();
         },
@@ -84,9 +84,12 @@ export default function UpsertTaskDialog({
           id="name"
           name="name"
           label="Task Name"
-          value={task?.name}
+          value={name}
           fullWidth
           variant="standard"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setName(event.target.value);
+          }}
         />
         <TextField
           autoFocus
@@ -94,12 +97,15 @@ export default function UpsertTaskDialog({
           margin="dense"
           id="description"
           name="description"
-          value={task?.description}
+          value={description}
           label="Task Description"
           fullWidth
           variant="standard"
           multiline
           rows={5}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setDescription(event.target.value);
+          }}
         />
         <>
           <Typography
