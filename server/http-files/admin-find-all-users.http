@@ -1,0 +1,6 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+@adminSecret = {{$dotenv ADMIN_SECRET}}
+
+GET {{base_url}}:{{port}}/admin/users
+Authorization: bearer {{adminSecret}}

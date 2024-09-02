@@ -1,0 +1,12 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+@adminSecret = {{$dotenv ADMIN_SECRET}}
+
+POST {{base_url}}:{{port}}/admin/users
+Authorization: bearer {{adminSecret}}
+Content-Type: application/json
+
+{
+    "name": "New User",
+    "email": "new@local.test"
+}

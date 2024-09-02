@@ -1,0 +1,13 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+
+# PUT {{base_url}}:{{port}}/api/:userId/tasks
+PUT {{base_url}}:{{port}}/api/0/tasks
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "first task Updated",
+    "description": "task description",
+    "dueDate": "2024-10-03T00:00:00.0Z"
+}
