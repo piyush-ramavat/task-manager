@@ -1,8 +1,7 @@
 import { Handler } from "express";
-import { APIErrorStatus, RestHelper } from "../lib/utils";
+import { ApiError, APIErrorStatus, RestHelper } from "../lib/utils";
 import { createTask, findTask } from "../services";
 import { CreateTaskRequestSchema } from "../lib/types";
-import { ApiError } from "../lib/utils/api-error";
 
 // POST /api/tasks
 export const createTaskHandler: Handler = async (req, res) => {

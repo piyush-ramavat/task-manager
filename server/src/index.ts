@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import { APIErrorHandler } from "./error-handler";
+import { APIErrorHandler } from "./lib/utils";
 import routes from "./routes";
 
 const app = express();

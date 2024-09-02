@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { healthCheckHandler } from "./health-check";
 import { createTaskHandler, getTaskHandler } from "./tasks";
-import { RestHelper } from "../lib/utils";
-import { withErrorHandler } from "../error-handler";
+import { RestHelper, withErrorHandler } from "../lib/utils";
 
 const apiRouter = Router();
 
