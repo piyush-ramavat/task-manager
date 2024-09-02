@@ -9,9 +9,15 @@ const port = process.env.PORT || 3000;
 // many host providers automatically sets this ENV variable based on deployed app url
 const url = process.env.URL || "http://localhost";
 
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
 app.use(express.json());
 
-// API routes
+// Routes
 app.use("/", routes);
 
 // Error handler

@@ -1,0 +1,11 @@
+@base_url = {{$dotenv URL}}
+@port = {{$dotenv PORT}}
+
+POST {{base_url}}:{{port}}/api/tasks
+Content-Type: application/json
+
+{
+    "name": "first task",
+    "desciption": "task description",
+    "dueDate": "02-Sep-2024"
+}
