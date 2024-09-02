@@ -42,6 +42,9 @@ export const findAllTasksForUser = async (userId: number): Promise<UserTask[]> =
     where: {
       userId,
     },
+    orderBy: {
+      id: "asc",
+    },
   });
 
   const userTasks = tasks.map((task) => {
