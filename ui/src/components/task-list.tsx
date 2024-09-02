@@ -1,9 +1,15 @@
 import { Container, CssBaseline, Box } from "@mui/material";
-import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowParams,
+} from "@mui/x-data-grid";
 
 import { useNavigate } from "react-router-dom";
 import { useGetUserTasks } from "../services";
 import { UserTask } from "../lib/types/task";
+import { toFormattedDateString, toFormattedDateTimeString } from "../lib/utils";
 
 type Props = {
   userId: number;
@@ -20,7 +26,7 @@ export default function UserTaskList({ userId }: Props) {
     {
       field: "id",
       headerName: "ID",
-      width: 10,
+      width: 70,
     },
     {
       field: "name",
@@ -35,12 +41,32 @@ export default function UserTaskList({ userId }: Props) {
     {
       field: "dueDate",
       headerName: "Due Date",
-      width: 200,
+      width: 100,
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <>{toFormattedDateString(params.value)}</>
+      ),
     },
     {
       field: "status",
       headerName: "Status",
       width: 90,
+    },
+    {
+      field: "createdAt",
+      headerName: "Created At",
+      width: 180,
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <>{toFormattedDateTimeString(params.value)}</>
+      ),
+    },
+
+    {
+      field: "updatedAt",
+      headerName: "Updated At",
+      width: 180,
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <>{toFormattedDateTimeString(params.value)}</>
+      ),
     },
   ];
   return (
@@ -48,6 +74,7 @@ export default function UserTaskList({ userId }: Props) {
       <Box sx={{ mt: 5, height: 400, width: "100%" }}>
         <CssBaseline />
         <DataGrid
+          autoHeight
           rows={tasks}
           columns={columns}
           initialState={{
