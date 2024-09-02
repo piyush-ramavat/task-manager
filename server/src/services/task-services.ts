@@ -1,5 +1,5 @@
 import { dbService } from "../lib/db-service";
-import { CreateTaskRequest } from "../lib/types";
+import { CreateTaskRequest, UpdateTaskRequest } from "../lib/types";
 
 export const createTask = async (taskDetails: CreateTaskRequest) => {
   const db = dbService();
@@ -28,5 +28,14 @@ export const findTask = async (taskId: number) => {
     where: {
       id: taskId,
     },
+  });
+};
+
+export const updateTask = async (taskDetails: UpdateTaskRequest) => {
+  const db = dbService();
+
+  return await db.task.update({
+    data: { ...taskDetails },
+    where: { id: taskDetails.id },
   });
 };

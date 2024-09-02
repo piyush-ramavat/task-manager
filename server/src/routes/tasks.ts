@@ -1,7 +1,7 @@
 import { Handler } from "express";
 import { ApiError, APIErrorStatus, RestHelper } from "../lib/utils";
-import { createTask, findAllTasksForUser, findAllUsers, findTask, findUser } from "../services";
-import { CreateTaskRequestSchema } from "../lib/types";
+import { createTask, findAllTasksForUser, findAllUsers, findTask, findUser, updateTask } from "../services";
+import { CreateTaskRequestSchema, UpdateTaskRequestSchema } from "../lib/types";
 
 // POST /api/tasks
 export const createTaskHandler: Handler = async (req, res) => {
@@ -43,4 +43,14 @@ export const getTaskHandler: Handler = async (req, res) => {
     throw new ApiError(APIErrorStatus.NotFound, "Task not found");
   }
   return RestHelper.json(res, task);
+};
+
+// PUT /api/tasks
+export const updateTaskHandler: Handler = async (req, res) => {
+  const parsed = UpdateTaskRequestSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new ApiError(APIErrorStatus.BadRequest, "Bad Request", parsed.error);
+  }
+  const updated = await updateTask(parsed.data);
+  return RestHelper.json(res, updated);
 };

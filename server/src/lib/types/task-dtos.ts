@@ -10,3 +10,12 @@ export const CreateTaskRequestSchema = z.object({
 });
 
 export type CreateTaskRequest = z.infer<typeof CreateTaskRequestSchema>;
+
+export const UpdateTaskRequestSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  dueDate: DateSchema,
+});
+
+export type UpdateTaskRequest = z.infer<typeof UpdateTaskRequestSchema>;
