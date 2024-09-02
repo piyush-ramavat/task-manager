@@ -1,4 +1,14 @@
-import { ErrorRequestHandler } from "express";
+import { ErrorRequestHandler, RequestHandler } from "express";
+
+export const withErrorHandler = (handler: RequestHandler): RequestHandler => {
+  return async (request, response, next) => {
+    try {
+      return await handler(request, response, next);
+    } catch (error) {
+      next(error);
+    }
+  };
+};
 
 export const APIErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // Delegate to default express error handler if headers already sent
