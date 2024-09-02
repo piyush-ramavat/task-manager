@@ -2,4 +2,4 @@
 @port = {{$dotenv PORT}}
 
 # GET {{base_url}}:{{port}}/api/:userId/tasks/list
-GET {{base_url}}:{{port}}/api/0/tasks/list
+GET {{base_url}}:{{port}}/api/-1/tasks/list

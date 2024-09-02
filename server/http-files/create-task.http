@@ -2,7 +2,7 @@
 @port = {{$dotenv PORT}}
 
 # POST {{base_url}}:{{port}}/api/:userId/tasks
-POST {{base_url}}:{{port}}/api/0/tasks
+POST {{base_url}}:{{port}}/api/-1/tasks
 Content-Type: application/json
 
 {
