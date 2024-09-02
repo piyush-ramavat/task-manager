@@ -88,7 +88,7 @@ export default function UserTaskList({ userId }: Props) {
           loading={isLoading}
           getRowId={(row) => row.id}
           onRowClick={(task: GridRowParams<UserTask>) => {
-            console.log("Row Clicked", task);
+            navigate(`/task-view/${task.id}`);
           }}
         />
       </Box>

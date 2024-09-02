@@ -16,3 +16,22 @@ export const useGetUserTasks = (userId: number): QueryResponse<UserTask[]> => {
     }
   );
 };
+
+export const useGetUserTask = (
+  userId: number,
+  taskId: number
+): QueryResponse<UserTask> => {
+  const apiClient = useApiDataClient();
+  // /api/:userId/tasks/:taskId
+  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/${taskId}`;
+  return useQuery(
+    `user-${userId}-task-${taskId}`,
+    () => {
+      return apiClient.get<UserTask>(url);
+    },
+    {
+      enabled: !!userId && !!taskId,
+      retry: false,
+    }
+  );
+};
