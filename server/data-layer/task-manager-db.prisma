@@ -1,0 +1,43 @@
+/// Settings for generating the prisma client
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+/// Settings for generating the strongly typed JSON fields
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
+/// Database settings
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["app"]
+}
+
+/// Represents a user of the application
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  name  String
+  tasks Task[]
+
+  @@map("users")
+  @@schema("app")
+}
+
+/// Represents a task for the user
+model Task {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  name        String   @db.VarChar(255)
+  description String
+  dueDate     DateTime @map("due_date") @db.Timestamptz(3)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+
+  @@map("tasks")
+  @@schema("app")
+}
