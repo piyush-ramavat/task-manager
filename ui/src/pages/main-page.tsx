@@ -7,6 +7,10 @@ import {
   Typography,
   TextField,
   Button,
+  Alert,
+  Snackbar,
+  SnackbarCloseReason,
+  AlertColor,
 } from "@mui/material";
 import { useState } from "react";
 import Grid from "@mui/material/Grid2";
@@ -21,6 +25,21 @@ function Main() {
   const mutation = useEmailOnlyAuth();
   const [cookies, setCookie] = useCookies(["userId", "userName"]);
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>();
+  const [snackbarMessage, setSnackbarMessage] = useState<string>();
+
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
+
   const handleGo = async () => {
     try {
       const user = await mutation.mutateAsync({ email });
@@ -29,12 +48,12 @@ function Main() {
         setCookie("userName", user.name);
         console.log(`User name: ${cookies.userName}`);
         navigate("/home");
-      } else {
-        console.log("Not Found");
+        return;
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
+    setSnackbarSeverity("error");
+    setSnackbarMessage("User with given email not found");
+    setSnackbarOpen(true);
   };
 
   return (
@@ -76,6 +95,20 @@ function Main() {
           </Button>
         </Box>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
