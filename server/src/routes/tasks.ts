@@ -3,9 +3,10 @@ import { ApiError, APIErrorStatus, RestHelper } from "../lib/utils";
 import { createTask, findAllTasksForUser, findAllUsers, findTask, findUser, updateTask } from "../services";
 import { CreateTaskRequestSchema, UpdateTaskRequestSchema } from "../lib/types";
 
-// POST /api/tasks
+// POST /api/:userId/tasks
 export const createTaskHandler: Handler = async (req, res) => {
-  const parsed = CreateTaskRequestSchema.safeParse(req.body);
+  const userId = Number(req.params.userId);
+  const parsed = CreateTaskRequestSchema.safeParse({ ...req.body, userId });
   if (!parsed.success) {
     throw new ApiError(APIErrorStatus.BadRequest, "Bad Request", parsed.error);
   }
@@ -20,7 +21,7 @@ export const createTaskHandler: Handler = async (req, res) => {
   return RestHelper.json(res, created);
 };
 
-// GET /api/tasks/all/:userId
+// GET /api/:userId/tasks/all
 export const getAllTasksHandler: Handler = async (req, res) => {
   const userId = Number(req.params.userId);
 
@@ -34,10 +35,12 @@ export const getAllTasksHandler: Handler = async (req, res) => {
   return RestHelper.json(res, tasks || []);
 };
 
-// GET /api/tasks/:taskId
+// GET /api/:userId/tasks/:taskId
 export const getTaskHandler: Handler = async (req, res) => {
+  const userId = Number(req.params.userId);
   const taskId = Number(req.params.taskId);
-  const task = await findTask(taskId);
+
+  const task = await findTask(taskId, userId);
 
   if (!task) {
     throw new ApiError(APIErrorStatus.NotFound, "Task not found");
@@ -45,9 +48,11 @@ export const getTaskHandler: Handler = async (req, res) => {
   return RestHelper.json(res, task);
 };
 
-// PUT /api/tasks
+// PUT /api/:userId/tasks
 export const updateTaskHandler: Handler = async (req, res) => {
-  const parsed = UpdateTaskRequestSchema.safeParse(req.body);
+  const userId = Number(req.params.userId);
+
+  const parsed = UpdateTaskRequestSchema.safeParse({ ...req.body, userId });
   if (!parsed.success) {
     throw new ApiError(APIErrorStatus.BadRequest, "Bad Request", parsed.error);
   }

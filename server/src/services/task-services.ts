@@ -21,12 +21,13 @@ export const findAllTasksForUser = async (userId: number) => {
   });
 };
 
-export const findTask = async (taskId: number) => {
+export const findTask = async (taskId: number, userId: number) => {
   const db = dbService();
 
   return await db.task.findFirst({
     where: {
       id: taskId,
+      userId,
     },
   });
 };

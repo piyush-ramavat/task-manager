@@ -1,7 +1,8 @@
 @base_url = {{$dotenv URL}}
 @port = {{$dotenv PORT}}
 
-PUT {{base_url}}:{{port}}/api/tasks
+# PUT {{base_url}}:{{port}}/api/:userId/tasks
+PUT {{base_url}}:{{port}}/api/0/tasks
 Content-Type: application/json
 
 {

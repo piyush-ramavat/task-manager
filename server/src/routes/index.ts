@@ -4,6 +4,7 @@ import { createTaskHandler, getAllTasksHandler, getTaskHandler, updateTaskHandle
 import { RestHelper, withErrorHandler } from "../lib/utils";
 import { createUserHandler, findAllUsersHandler } from "./user";
 import { adminAuthHandler } from "./admin-auth";
+import { userExistsAuthHandler } from "./user-exists-auth";
 
 const apiRouter = Router();
 
@@ -11,10 +12,10 @@ const apiRouter = Router();
 apiRouter.get("/health-check", healthCheckHandler);
 
 // API routes
-apiRouter.post("/api/tasks", withErrorHandler(createTaskHandler));
-apiRouter.get("/api/tasks/all/:userId", withErrorHandler(getAllTasksHandler));
-apiRouter.get("/api/tasks/:taskId", withErrorHandler(getTaskHandler));
-apiRouter.put("/api/tasks", withErrorHandler(updateTaskHandler));
+apiRouter.post("/api/:userId/tasks", withErrorHandler(userExistsAuthHandler), withErrorHandler(createTaskHandler));
+apiRouter.get("/api/:userId/tasks/all", withErrorHandler(userExistsAuthHandler), withErrorHandler(getAllTasksHandler));
+apiRouter.get("/api/:userId/tasks/:taskId", withErrorHandler(userExistsAuthHandler), withErrorHandler(getTaskHandler));
+apiRouter.put("/api/:userId/tasks", withErrorHandler(userExistsAuthHandler), withErrorHandler(updateTaskHandler));
 
 // Admin routes
 apiRouter.post("/admin/users", withErrorHandler(adminAuthHandler), withErrorHandler(createUserHandler));
