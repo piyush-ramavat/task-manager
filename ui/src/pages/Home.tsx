@@ -1,12 +1,14 @@
-import React from "react";
 import { useCookies } from "react-cookie";
+import UserAppBar from "../components/user-app-bar";
+import UserTaskList from "../components/task-list";
 
 function Home() {
-  const [cookies] = useCookies(["user"]);
+  const [cookies] = useCookies();
 
   return (
     <>
-      <h1>Welcome {cookies.user?.name}</h1>
+      <UserAppBar />
+      <UserTaskList userId={cookies.userId} />
     </>
   );
 }

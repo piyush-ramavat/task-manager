@@ -19,14 +19,15 @@ function Main() {
   const [email, setEmail] = useState<string>("default-user@local.com");
   const navigate = useNavigate();
   const mutation = useEmailOnlyAuth();
-  const [cookies, setCookie] = useCookies(["user"]);
+  const [cookies, setCookie] = useCookies(["userId", "userName"]);
 
   const handleGo = async () => {
     try {
       const user = await mutation.mutateAsync({ email });
       if (user) {
-        setCookie("user", user);
-        console.log(`User name: ${cookies.user?.name}`);
+        setCookie("userId", user.id);
+        setCookie("userName", user.name);
+        console.log(`User name: ${cookies.userName}`);
         navigate("/home");
       } else {
         console.log("Not Found");
@@ -37,47 +38,45 @@ function Main() {
   };
 
   return (
-    <>
-      <Container maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            mt: 20,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <LockPerson />
-          </Avatar>
-          <Typography variant="h5">Get Started</Typography>
-          <Box sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Grid>
+    <Container maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          mt: 20,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
+          <LockPerson />
+        </Avatar>
+        <Typography variant="h5">Get Started</Typography>
+        <Box sx={{ mt: 3 }}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </Grid>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleGo}
-            >
-              Go
-            </Button>
-          </Box>
+          </Grid>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleGo}
+          >
+            Go
+          </Button>
         </Box>
-      </Container>
-    </>
+      </Box>
+    </Container>
   );
 }
 
