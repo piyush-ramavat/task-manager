@@ -7,8 +7,7 @@ export const useEmailOnlyAuth = (): MutationResponse<
   User
 > => {
   const apiClient = useApiDataClient();
-  // const url = `${process.env.API_BASE_URL}/user/auth-by-email`;// TODO: check why process.env is not working
-  const url = `http://localhost:3001/user/auth-by-email`;
+  const url = `${process.env.REACT_APP_API_BASE_URL}/user/auth-by-email`;
 
   return useMutation((requestData: AuthByEmailRequest) =>
     apiClient.post<User>(url, requestData)
