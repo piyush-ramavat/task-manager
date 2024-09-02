@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { healthCheckHandler } from "./health-check";
-import { createTaskHandler, getTaskHandler } from "./tasks";
+import { createTaskHandler, getAllTasksHandler, getTaskHandler } from "./tasks";
 import { RestHelper, withErrorHandler } from "../lib/utils";
 import { createUserHandler, findAllUsersHandler } from "./user";
 import { adminAuthHandler } from "./admin-auth";
@@ -12,6 +12,7 @@ apiRouter.get("/health-check", healthCheckHandler);
 
 // API routes
 apiRouter.post("/api/tasks", withErrorHandler(createTaskHandler));
+apiRouter.get("/api/tasks/all/:userId", withErrorHandler(getAllTasksHandler));
 apiRouter.get("/api/tasks/:taskId", withErrorHandler(getTaskHandler));
 
 // Admin routes

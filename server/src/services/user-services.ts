@@ -11,6 +11,16 @@ export const createUser = async (userDetails: CreateUserRequest) => {
   });
 };
 
+export const findUser = async (userId: number) => {
+  const db = dbService();
+
+  return await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+};
+
 export const findAllUsers = async () => {
   const db = dbService();
 

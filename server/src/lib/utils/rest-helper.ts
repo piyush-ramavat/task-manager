@@ -12,9 +12,7 @@ export enum APIErrorStatus {
 
 export const RestHelper = {
   json(res: Response, object: unknown | null) {
-    if (object) {
-      res.json(object);
-    }
+    res.json(object || {});
   },
   noContent(res: Response) {
     res.sendStatus(APIErrorStatus.NoContent);
