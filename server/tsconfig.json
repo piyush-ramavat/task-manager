@@ -17,6 +17,6 @@
     "experimentalDecorators": true,
     "types": ["node"]
   },
-  "include": ["./**/*", "types/jest.d.ts"],
+  "include": ["src/**/*", "types/jest.d.ts"],
   "files": ["node_modules/jest-expect-message/types/index.d.ts"]
 }

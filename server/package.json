@@ -13,11 +13,11 @@
     "dev:server": "nodemon ./dist/index.js --inspect",
     "test": "jest --runInBand",
     "test:ci": "jest --runInBand --ci --reporters=default --reporters=jest-junit --logHeapUsage",
-    "db:generate": "prisma generate --schema=./data-layer/task-manager-db.prisma",
-    "db:push": "prisma db push --schema=./data-layer/task-manager-db.prisma",
-    "db:force-push": "prisma db push --accept-data-loss --schema=./data-layer/task-manager-db.prisma",
-    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' ./data-layer/task-manager-db.seed.ts",
-    "db:reset": "npx prisma db push --force-reset --schema=./data-layer/task-manager-db.prisma && ts-node --compiler-options '{\"module\":\"CommonJS\"}' ./data-layer/task-manager-db.seed.ts"
+    "db:generate": "prisma generate --schema=./src/data-layer/task-manager-db.prisma",
+    "db:push": "prisma db push --schema=./src/data-layer/task-manager-db.prisma",
+    "db:force-push": "prisma db push --accept-data-loss --schema=./src/data-layer/task-manager-db.prisma",
+    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' ./src/data-layer/task-manager-db.seed.ts",
+    "db:reset": "npx prisma db push --force-reset --schema=./src/data-layer/task-manager-db.prisma && ts-node --compiler-options '{\"module\":\"CommonJS\"}' ./src/data-layer/task-manager-db.seed.ts"
   },
   "author": "Piyush Ramavat",
   "license": "MIT",

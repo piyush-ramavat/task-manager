@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "install:all": "npm install && npm run install:backend",
+    "install:backend": "cd server && npm install",
     "lint": "cd server && npm run lint",
-    "db:setup": "cd server && npm run db:generate && npm run db:reset", 
+    "db:setup": "cd server && npm run db:generate && npm run db:reset",
     "dev": "cd server && npm run dev",
     "build": "cd server && npm run build",
     "start": "cd server && npm start",
