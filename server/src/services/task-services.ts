@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { dbService } from "../lib/db-service";
 import { CreateTaskRequest, Paginated, TaskStatus, UpdateTaskRequest, UserTask } from "../lib/types";
 
@@ -46,7 +47,7 @@ export const findAllTasksForUser = async (
   const db = dbService();
 
   const offset = pageIndex * pageSize;
-  const orderBy = { [sortBy]: order };
+  const orderBy = sortBy !== "status" ? { [sortBy]: order } : undefined;
 
   let where =
     searchTerm && searchTerm.length > 0
@@ -71,9 +72,12 @@ export const findAllTasksForUser = async (
     take: pageSize,
   });
 
-  const userTasks = tasks.map((task) => {
+  let userTasks = tasks.map((task) => {
     return { ...task, status: getStatus(task.dueDate) } as UserTask;
   });
+  if (sortBy !== "status") {
+    userTasks = _.orderBy(userTasks, ["status"], [order === "asc"]);
+  }
 
   return { data: userTasks, pageIndex, pageSize, total: taskCount };
 };
