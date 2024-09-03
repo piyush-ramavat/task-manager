@@ -76,7 +76,7 @@ export const findAllTasksForUser = async (
     return { ...task, status: getStatus(task.dueDate) } as UserTask;
   });
   if (sortBy === "status") {
-    userTasks = _.orderBy(userTasks, ["status"], [order === "asc"]);
+    userTasks = _.orderBy(userTasks, ["status"], [order as any]);
   }
 
   return { data: userTasks, pageIndex, pageSize, total: taskCount };
