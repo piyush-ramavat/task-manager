@@ -30,9 +30,16 @@ export const getTaskListHandler: Handler = async (req, res) => {
   if (!user) {
     throw new ApiError(APIErrorStatus.BadRequest, "User Not found");
   }
-  const tasks = await findAllTasksForUser(userId);
 
-  return RestHelper.json(res, tasks || []);
+  const pageIndex = Number(req.query.pageIndex || 0);
+  const pageSize = Number(req.query.pageSize || 10);
+  const sortBy = req.query.sortBy as string;
+  const order = req.query.order as string;
+  const searchTerm = req.query.search as string;
+
+  const paginatedTasks = await findAllTasksForUser(userId, pageIndex, pageSize, sortBy, order, searchTerm);
+
+  return RestHelper.json(res, paginatedTasks || []);
 };
 
 // GET /api/:userId/tasks/:taskId

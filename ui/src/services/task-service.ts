@@ -1,24 +1,32 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   MutationResponse,
   QueryResponse,
   useApiDataClient,
 } from "../lib/utils";
-import { CreateUserTask, UpdateUserTask, UserTask } from "../lib/types/task";
+import {
+  CreateUserTask,
+  Paginated,
+  UpdateUserTask,
+  UserTask,
+} from "../lib/types/task";
+import { useSearchParams } from "react-router-dom";
 
-export const useGetUserTasks = (userId: number): QueryResponse<UserTask[]> => {
+export const useGetUserTasks = (
+  userId: number
+): QueryResponse<Paginated<UserTask[]>> => {
+  const [searchParams] = useSearchParams();
+  const params = new URLSearchParams(searchParams);
   const apiClient = useApiDataClient();
-  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/list`;
-  return useQuery(
-    `user-${userId}-task-list`,
-    () => {
-      return apiClient.get<UserTask[]>(url);
+  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/list?${params}`;
+  return useQuery({
+    queryKey: [url],
+    queryFn: () => {
+      return apiClient.get<Paginated<UserTask[]>>(url);
     },
-    {
-      enabled: !!userId,
-      retry: false,
-    }
-  );
+    enabled: !!userId,
+    retry: false,
+  });
 };
 
 export const useGetUserTask = (
@@ -28,18 +36,14 @@ export const useGetUserTask = (
   const apiClient = useApiDataClient();
   // /api/:userId/tasks/:taskId
   const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/${taskId}`;
-  return useQuery(
-    `user-${userId}-task-${taskId}`,
-    () => {
+  return useQuery({
+    queryKey: [`user-${userId}-task-${taskId}`],
+    queryFn: () => {
       return apiClient.get<UserTask>(url);
     },
-    {
-      enabled: !!userId && !!taskId,
-      keepPreviousData: false,
-      cacheTime: 0,
-      refetchOnMount: true,
-    }
-  );
+    enabled: !!userId && !!taskId,
+    refetchOnMount: true,
+  });
 };
 
 export const useCreateTask = (
@@ -49,9 +53,10 @@ export const useCreateTask = (
   // /api/:userId/tasks
   const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks`;
 
-  return useMutation((requestData: CreateUserTask) =>
-    apiClient.post<UserTask>(url, requestData)
-  );
+  return useMutation({
+    mutationFn: (requestData: CreateUserTask) =>
+      apiClient.post<UserTask>(url, requestData),
+  });
 };
 
 export const useUpdateTask = (
@@ -61,7 +66,11 @@ export const useUpdateTask = (
   // /api/:userId/tasks
   const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks`;
 
-  return useMutation((requestData: UpdateUserTask) =>
-    apiClient.put<UserTask>(url, requestData)
-  );
+  // return useMutation((requestData: UpdateUserTask) =>
+  //   apiClient.put<UserTask>(url, requestData)
+  // );
+  return useMutation({
+    mutationFn: (requestData: UpdateUserTask) =>
+      apiClient.put<UserTask>(url, requestData),
+  });
 };
