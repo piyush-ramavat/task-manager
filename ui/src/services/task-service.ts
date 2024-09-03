@@ -15,7 +15,6 @@ import { useSearchParams } from "react-router-dom";
 export const useGetUserTasks = (
   userId: number
 ): QueryResponse<Paginated<UserTask[]>> => {
-  console.log("useGetUserTasks()");
   const [searchParams] = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const apiClient = useApiDataClient();

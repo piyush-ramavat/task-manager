@@ -50,8 +50,6 @@ export default function UserTaskList({ userId }: Props) {
   } = useGetUserTasks(userId);
 
   useEffect(() => {
-    console.log("useEffect(openCreateDialog)");
-
     if (!isRefetching) refetch();
   }, [openCreateDialog]);
 
@@ -120,7 +118,6 @@ export default function UserTaskList({ userId }: Props) {
   const params = new URLSearchParams(searchParams);
 
   useEffect(() => {
-    console.log("useEffect( sorting)");
     params.set("pageIndex", pageIndex.toString());
     params.set("pageSize", pageSize.toString());
 
@@ -137,8 +134,6 @@ export default function UserTaskList({ userId }: Props) {
   }, [sorting, pageIndex, pageSize]);
 
   useEffect(() => {
-    console.log("useEffect( search)");
-
     if (searchTerm.length > 0) {
       params.set("search", searchTerm);
     } else {
@@ -258,7 +253,6 @@ export default function UserTaskList({ userId }: Props) {
           }}
           onRowsPerPageChange={(e) => {
             const size = e.target.value ? Number(e.target.value) : 10;
-            console.log("Size Changed", size);
             setPageSize(size);
           }}
           ActionsComponent={TablePaginationActions}
