@@ -13,7 +13,7 @@ const getStatus = (date: Date): TaskStatus => {
 
   if (dueDate < today) {
     return TaskStatus.Overdue;
-  } else if (dueDate > today && dueDate < dueSoonDate) {
+  } else if (dueDate >= today && dueDate < dueSoonDate) {
     return TaskStatus.DueSoon;
   }
 
