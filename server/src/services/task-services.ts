@@ -75,7 +75,7 @@ export const findAllTasksForUser = async (
   let userTasks = tasks.map((task) => {
     return { ...task, status: getStatus(task.dueDate) } as UserTask;
   });
-  if (sortBy !== "status") {
+  if (sortBy === "status") {
     userTasks = _.orderBy(userTasks, ["status"], [order === "asc"]);
   }
 
