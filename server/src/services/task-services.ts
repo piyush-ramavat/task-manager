@@ -1,5 +1,5 @@
 import { dbService } from "../lib/db-service";
-import { CreateTaskRequest, TaskStatus, UpdateTaskRequest, UserTask } from "../lib/types";
+import { CreateTaskRequest, Paginated, TaskStatus, UpdateTaskRequest, UserTask } from "../lib/types";
 
 const getStatus = (date: Date): TaskStatus => {
   const today = new Date();
@@ -35,23 +35,47 @@ export const createTask = async (taskDetails: CreateTaskRequest): Promise<UserTa
   } as UserTask;
 };
 
-export const findAllTasksForUser = async (userId: number): Promise<UserTask[]> => {
+export const findAllTasksForUser = async (
+  userId: number,
+  pageIndex: number = 0,
+  pageSize: number = 10,
+  sortBy: string = "id",
+  order: string = "asc",
+  searchTerm?: string
+): Promise<Paginated<UserTask[]>> => {
   const db = dbService();
 
+  const offset = pageIndex * pageSize;
+  const orderBy = { [sortBy]: order };
+
+  let where =
+    searchTerm && searchTerm.length > 0
+      ? {
+          userId,
+          name: {
+            contains: searchTerm,
+          },
+        }
+      : {
+          userId,
+        };
+
+  const taskCount = await db.task.count({
+    where,
+  });
+
   const tasks = await db.task.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      id: "asc",
-    },
+    where,
+    orderBy,
+    skip: offset,
+    take: pageSize,
   });
 
   const userTasks = tasks.map((task) => {
     return { ...task, status: getStatus(task.dueDate) } as UserTask;
   });
 
-  return userTasks;
+  return { data: userTasks, pageIndex, pageSize, total: taskCount };
 };
 
 export const findTask = async (taskId: number, userId: number): Promise<UserTask | undefined> => {

@@ -29,3 +29,10 @@ export enum TaskStatus {
 }
 
 export type UserTask = Task & { status: TaskStatus };
+
+export type Paginated<T> = {
+  data: T;
+  pageIndex: number;
+  pageSize: number;
+  total: number;
+};
