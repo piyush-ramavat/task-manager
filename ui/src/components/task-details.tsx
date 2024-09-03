@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   Container,
+  CssBaseline,
   Paper,
   Stack,
   Typography,
@@ -54,6 +55,7 @@ export default function UserTaskDetails({ userId }: Props) {
   return (
     <Container maxWidth="xl">
       <Box sx={{ mt: 5, width: "100%" }}>
+        <CssBaseline />
         <Typography variant="h4" sx={{ m: 2 }}>
           Task Details
         </Typography>
