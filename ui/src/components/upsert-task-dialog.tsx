@@ -123,7 +123,7 @@ export default function UpsertTaskDialog({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button type="submit">save</Button>
-        {updateMutation.isLoading && <CircularProgress />}
+        {updateMutation.isPending && <CircularProgress />}
       </DialogActions>
     </Dialog>
   );

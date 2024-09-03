@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 import { useCallback } from "react";
 import _ from "lodash";
-import { UseMutationResult, UseQueryResult } from "react-query";
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 
 export const createApiClient = () => axios.create();
 
