@@ -1,12 +1,11 @@
-import { Container, CssBaseline, Box } from "@mui/material";
 import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-  GridRowParams,
-} from "@mui/x-data-grid";
-
-import { useNavigate } from "react-router-dom";
+  Container,
+  CssBaseline,
+  Box,
+  TableContainer,
+  TextField,
+} from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetUserTasks } from "../services";
 import { UserTask } from "../lib/types/task";
 import { toFormattedDateString, toFormattedDateTimeString } from "../lib/utils";
@@ -14,6 +13,26 @@ import { Fab, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import UpsertTaskDialog from "./upsert-task-dialog";
 import { Fragment, useEffect, useState } from "react";
+import {
+  type ColumnDef,
+  type SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
+import Paper from "@mui/material/Paper";
+import TablePaginationActions from "./table-pagination-actions";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 
 type Props = {
   userId: number;
@@ -21,7 +40,7 @@ type Props = {
 
 export default function UserTaskList({ userId }: Props) {
   const navigate = useNavigate();
-  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
 
   const {
     data: tasks,
@@ -31,56 +50,106 @@ export default function UserTaskList({ userId }: Props) {
   } = useGetUserTasks(userId);
 
   useEffect(() => {
-    refetch();
-  }, [openEditDialog, refetch]);
+    console.log("useEffect(openCreateDialog)");
 
-  const columns: GridColDef[] = [
+    if (!isRefetching) refetch();
+  }, [openCreateDialog]);
+
+  const columns: ColumnDef<UserTask>[] = [
     {
-      field: "id",
-      headerName: "ID",
-      width: 70,
+      accessorKey: "id",
+      header: "ID",
     },
     {
-      field: "name",
-      headerName: "Task Name",
-      width: 255,
+      accessorKey: "name",
+      header: "Task Name",
     },
     {
-      field: "description",
-      headerName: "Description",
-      width: 255,
+      accessorKey: "description",
+      header: "Description",
     },
     {
-      field: "dueDate",
-      headerName: "Due Date",
-      width: 100,
-      renderCell: (params: GridRenderCellParams<any, Date>) => (
-        <>{toFormattedDateString(params.value)}</>
+      accessorKey: "dueDate",
+      header: "Due Date",
+      cell: (params) => (
+        <>{toFormattedDateString(params.row.original.dueDate)}</>
       ),
     },
     {
-      field: "status",
-      headerName: "Status",
-      width: 90,
+      accessorKey: "status",
+      header: "Status",
     },
     {
-      field: "createdAt",
-      headerName: "Created At",
-      width: 180,
-      renderCell: (params: GridRenderCellParams<any, Date>) => (
-        <>{toFormattedDateTimeString(params.value)}</>
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: (params) => (
+        <>{toFormattedDateTimeString(params.row.original.createdAt)}</>
       ),
     },
 
     {
-      field: "updatedAt",
-      headerName: "Updated At",
-      width: 180,
-      renderCell: (params: GridRenderCellParams<any, Date>) => (
-        <>{toFormattedDateTimeString(params.value)}</>
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: (params) => (
+        <>{toFormattedDateTimeString(params.row.original.updatedAt)}</>
       ),
     },
   ];
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const table = useReactTable<UserTask>({
+    data: tasks?.data ?? [],
+    columns: columns,
+    state: {
+      sorting,
+    },
+    manualSorting: true,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel<UserTask>(),
+    getSortedRowModel: getSortedRowModel<UserTask>(),
+    getFilteredRowModel: getFilteredRowModel<UserTask>(),
+    getPaginationRowModel: getPaginationRowModel<UserTask>(),
+  });
+
+  const [pageSize, setPageSize] = useState(tasks?.pageSize || 10);
+  const [pageIndex, setPageIndex] = useState(tasks?.pageIndex || 0);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+
+  useEffect(() => {
+    console.log("useEffect( sorting)");
+    params.set("pageIndex", pageIndex.toString());
+    params.set("pageSize", pageSize.toString());
+
+    if (sorting.length > 0) {
+      params.set("sortBy", sorting[0].id);
+      params.set("order", sorting[0].desc ? "desc" : "asc");
+    } else {
+      params.delete("sortBy");
+      params.delete("order");
+    }
+
+    setSearchParams(params);
+    if (!isRefetching) refetch();
+  }, [sorting, pageIndex, pageSize]);
+
+  useEffect(() => {
+    console.log("useEffect( search)");
+
+    if (searchTerm.length > 0) {
+      params.set("search", searchTerm);
+    } else {
+      params.delete("search");
+    }
+
+    setSearchParams(params);
+
+    if (!isRefetching) refetch();
+  }, [searchTerm]);
+
   return (
     <Container maxWidth="xl">
       <Stack spacing={2} sx={{ my: 2 }} direction="row">
@@ -89,41 +158,110 @@ export default function UserTaskList({ userId }: Props) {
             variant="extended"
             size="medium"
             color="primary"
-            onClick={() => setOpenEditDialog(true)}
+            onClick={() => setOpenCreateDialog(true)}
           >
             <AddIcon />
             Add Task
           </Fab>
-
           <UpsertTaskDialog
             isCreateMode={true}
-            openDialog={openEditDialog}
+            openDialog={openCreateDialog}
             onToggleDialog={() => {
-              setOpenEditDialog(!openEditDialog);
+              setOpenCreateDialog(!openCreateDialog);
             }}
           />
         </Fragment>
+        <TextField
+          id="search"
+          name="search"
+          value={searchTerm}
+          label="Search by Task Name"
+          variant="outlined"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchTerm(event.target.value);
+          }}
+        />
       </Stack>
 
       <Box sx={{ mt: 5, width: "100%" }}>
         <CssBaseline />
-        <DataGrid
-          autoHeight
-          rows={tasks}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 20,
-              },
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} color="primary">
+                  {headerGroup.headers.map((header) => (
+                    <TableCell
+                      key={header.id}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "table-header",
+                      }}
+                      className="MuiTableRow-head"
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <Stack spacing={2} direction="row">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {{
+                          asc: <ArrowDropDown />,
+                          desc: <ArrowDropUp />,
+                          false: "",
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </Stack>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  hover={true}
+                  key={row.id}
+                  onClick={() => navigate(`/task-view/${row.original.id}`)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[
+            5,
+            10,
+            25,
+            { label: "All", value: tasks?.total || 0 },
+          ]}
+          component="div"
+          count={tasks?.total || 0}
+          rowsPerPage={pageSize}
+          page={pageIndex}
+          slotProps={{
+            select: {
+              inputProps: { "aria-label": "rows per page" },
+              native: true,
             },
           }}
-          pageSizeOptions={[10, 20, 30]}
-          loading={isLoading || isRefetching}
-          getRowId={(row) => row.id}
-          onRowClick={(task: GridRowParams<UserTask>) => {
-            navigate(`/task-view/${task.id}`);
+          onPageChange={(_, page) => {
+            setPageIndex(page);
           }}
+          onRowsPerPageChange={(e) => {
+            const size = e.target.value ? Number(e.target.value) : 10;
+            console.log("Size Changed", size);
+            setPageSize(size);
+          }}
+          ActionsComponent={TablePaginationActions}
         />
       </Box>
     </Container>

@@ -28,3 +28,10 @@ export type CreateUserTask = {
 };
 
 export type UpdateUserTask = CreateUserTask & { id: number };
+
+export type Paginated<T> = {
+  data: T;
+  pageIndex: number;
+  pageSize: number;
+  total: number;
+};

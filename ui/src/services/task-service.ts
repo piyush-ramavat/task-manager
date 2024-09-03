@@ -4,15 +4,26 @@ import {
   QueryResponse,
   useApiDataClient,
 } from "../lib/utils";
-import { CreateUserTask, UpdateUserTask, UserTask } from "../lib/types/task";
+import {
+  CreateUserTask,
+  Paginated,
+  UpdateUserTask,
+  UserTask,
+} from "../lib/types/task";
+import { useSearchParams } from "react-router-dom";
 
-export const useGetUserTasks = (userId: number): QueryResponse<UserTask[]> => {
+export const useGetUserTasks = (
+  userId: number
+): QueryResponse<Paginated<UserTask[]>> => {
+  console.log("useGetUserTasks()");
+  const [searchParams] = useSearchParams();
+  const params = new URLSearchParams(searchParams);
   const apiClient = useApiDataClient();
-  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/list`;
+  const url = `${process.env.REACT_APP_API_BASE_URL}/api/${userId}/tasks/list?${params}`;
   return useQuery({
-    queryKey: [`user-${userId}-task-list`],
+    queryKey: [url],
     queryFn: () => {
-      return apiClient.get<UserTask[]>(url);
+      return apiClient.get<Paginated<UserTask[]>>(url);
     },
     enabled: !!userId,
     retry: false,
